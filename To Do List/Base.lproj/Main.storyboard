@@ -75,11 +75,24 @@
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     </view>
                     <navigationItem key="navigationItem" title="New To Do Item" id="FfX-sK-zhs">
-                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="eek-bq-zYT"/>
-                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="Jfw-22-FY1"/>
+                        <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="eek-bq-zYT">
+                            <connections>
+                                <action selector="cancelPressed:" destination="BYZ-38-t0r" id="W81-EU-CIs"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem key="rightBarButtonItem" systemItem="save" id="Jfw-22-FY1">
+                            <connections>
+                                <segue destination="eyI-gp-aeq" kind="unwind" unwindAction="unwindToTableViewControllerWithSender:" id="raI-mq-dFg"/>
+                            </connections>
+                        </barButtonItem>
                     </navigationItem>
+                    <connections>
+                        <outlet property="saveBarButton" destination="Jfw-22-FY1" id="fTN-bM-Wr7"/>
+                        <outlet property="toDoField" destination="9d2-oV-KT4" id="7Hi-SZ-ZHO"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <exit id="eyI-gp-aeq" userLabel="Exit" sceneMemberID="exit"/>
             </objects>
             <point key="canvasLocation" x="1967.2" y="154.27286356821591"/>
         </scene>
