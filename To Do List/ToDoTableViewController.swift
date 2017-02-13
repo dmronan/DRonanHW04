@@ -10,6 +10,8 @@ import UIKit
 
 class ToDoTableViewController: UITableViewController {
 
+    @IBOutlet weak var addBarButton: UIBarButtonItem!
+    
     var toDoArray = [String]()
     
     var toDoNotes = [String]()
@@ -91,22 +93,44 @@ class ToDoTableViewController: UITableViewController {
     }
  
 
-    /*
+    
     // Override to support rearranging the table view.
     override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
+        
+        //first make a copy of the values in the cell we are moving
+        let itemToMove = toDoArray[fromIndexPath.row]
+        let noteToMove = toDoNotes[fromIndexPath.row]
+     
+        // delete them from the  original location pre-move
+        toDoArray.remove(at: fromIndexPath.row)
+        toDoNotes.remove(at: fromIndexPath.row)
+        
+        // insert them into the "to", post-move location
+        toDoArray.insert(itemToMove, at: to.row)
+        toDoNotes.insert(noteToMove, at: to.row)
+        
+        //save them to UserDefaultData
+        defaultsData.set(toDoArray, forKey: "toDoArray")
+        defaultsData.set(toDoNotes, forKey: "toDoNotes")
     }
-    */
+ 
 
-    /*
+    
     // Override to support conditional rearranging of the table view.
     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
         // Return false if you do not want the item to be re-orderable.
         return true
     }
-    */
-
-    
+ 
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        super.setEditing(editing, animated: animated)
+        
+        if (editing) {
+            addBarButton.isEnabled = false
+        } else {
+            addBarButton.isEnabled = true
+    }
+    }
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
