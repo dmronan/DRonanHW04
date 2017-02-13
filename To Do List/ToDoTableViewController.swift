@@ -17,8 +17,7 @@ class ToDoTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
+    
         // self.clearsSelectionOnViewWillAppear = false
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
@@ -88,24 +87,45 @@ class ToDoTableViewController: UITableViewController {
     }
     */
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         // Get the new view controller using segue.destinationViewController.
         // Pass the selected object to the new view controller.
+    
+        if segue.identifier == "ShowDetail" {
+            let indexPath = tableView.indexPathForSelectedRow!
+            let destinationViewController = segue.destination as!
+            DetailViewController
+            let selectToDo = toDoArray[indexPath.row]
+            destinationViewController.toDoItem = selectToDo
+        }
+    
+    
     }
-    */
+ 
     
     @IBAction func unwindToTableViewController(sender: UIStoryboardSegue) {
+        //check if the method / func is being called by the DetailViewController, check if we can get data out of the Detail View Controller's toDoItem String?
         if let sourceViewController = sender.source as? DetailViewController,
             let toDoItem = sourceViewController.toDoItem {
-            toDoArray.append(toDoItem)
-            let newIndexPath = IndexPath(row: toDoArray.count - 1, section: 0)
-            tableView.insertRows(at: [newIndexPath], with: .bottom)
+            
+            if let selectIndexPath = tableView.indexPathForSelectedRow {
+                toDoArray[selectIndexPath.row] = toDoItem
+                tableView.reloadRows(at: [selectIndexPath], with: .none)
+            } else { // get the table location where we're going to insert the new toDoItem
+                toDoArray.append(toDoItem)
+                let newIndexPath = IndexPath(row: toDoArray.count - 1, section: 0)
+                
+                // add the toDoItem String grabbed from DetailViewController to the end of the toDoArray
+                
+                // Add the toDoItem to the table
+                tableView.insertRows(at: [newIndexPath], with: .bottom)
         }
     }
     }
 
 
+}
