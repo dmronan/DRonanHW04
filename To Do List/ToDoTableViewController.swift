@@ -10,10 +10,11 @@ import UIKit
 
 class ToDoTableViewController: UITableViewController {
 
-    var toDoArray = ["Learn Swift",
-                     "Build Apps",
-                     "Change the World!"]
+    var toDoArray = [String]()
     
+    var toDoNotes = [String]()
+    
+    var defaultsData = UserDefaults.standard
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,7 +23,20 @@ class ToDoTableViewController: UITableViewController {
 
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         self.navigationItem.leftBarButtonItem = self.editButtonItem
-    }
+        
+        toDoArray = defaultsData.stringArray(forKey: "toDoArray") ?? [String]()
+        toDoNotes = defaultsData.stringArray(forKey: "toDoNotes") ?? [String]()
+        
+        // if one array is count size zero, set the other one to an empty array as well
+        
+        if toDoArray.count == 0 {
+            toDoNotes = [String]()
+        }
+        if toDoNotes.count == 0 {
+            toDoArray = [String]()
+        }
+            }
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -47,6 +61,7 @@ class ToDoTableViewController: UITableViewController {
 
         // Configure the cell...
         cell.textLabel?.text = toDoArray[indexPath.row]
+        cell.detailTextLabel?.text = toDoNotes[indexPath.row]
         
         return cell
     }
@@ -65,11 +80,14 @@ class ToDoTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             // Delete the row from the data source
-            toDoArray.remove(at: indexPath.row)
+            toDoArray.remove(at: indexPath.row) // remove from array
+            toDoNotes.remove(at: indexPath.row) // remove selected note from array
             tableView.deleteRows(at: [indexPath], with: .fade)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
+        }
+        defaultsData.set(toDoArray, forKey: "toDoArray")
+        defaultsData.set(toDoNotes, forKey: "toDoNotes")
     }
  
 
@@ -101,7 +119,9 @@ class ToDoTableViewController: UITableViewController {
             let destinationViewController = segue.destination as!
             DetailViewController
             let selectToDo = toDoArray[indexPath.row]
+            let selectToDoNote = toDoNotes[indexPath.row]
             destinationViewController.toDoItem = selectToDo
+            destinationViewController.toDoNote = selectToDoNote
         }
     
     
@@ -115,9 +135,21 @@ class ToDoTableViewController: UITableViewController {
             
             if let selectIndexPath = tableView.indexPathForSelectedRow {
                 toDoArray[selectIndexPath.row] = toDoItem
+                if let toDoNote = sourceViewController.toDoNote {
+                    toDoNotes[selectIndexPath.row] = toDoNote
+                } else {
+                    toDoNotes[selectIndexPath.row] = ""
+                }
+                toDoNotes[selectIndexPath.row] = sourceViewController.toDoNote!
                 tableView.reloadRows(at: [selectIndexPath], with: .none)
             } else { // get the table location where we're going to insert the new toDoItem
                 toDoArray.append(toDoItem)
+                if let toDoNote = sourceViewController.toDoNote {
+                    toDoNotes.append(toDoNote)
+                } else {
+                    toDoNotes.append("")
+                }
+               
                 let newIndexPath = IndexPath(row: toDoArray.count - 1, section: 0)
                 
                 // add the toDoItem String grabbed from DetailViewController to the end of the toDoArray
@@ -125,6 +157,9 @@ class ToDoTableViewController: UITableViewController {
                 // Add the toDoItem to the table
                 tableView.insertRows(at: [newIndexPath], with: .bottom)
         }
+            
+            defaultsData.set(toDoArray, forKey: "toDoArray")
+            defaultsData.set(toDoNotes, forKey: "toDoNotes")
     }
     }
 

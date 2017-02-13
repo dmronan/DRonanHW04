@@ -12,13 +12,16 @@ class DetailViewController: UIViewController, UITextFieldDelegate {
 
     @IBOutlet weak var toDoField: UITextField!
     @IBOutlet weak var saveBarButton: UIBarButtonItem!
+    @IBOutlet weak var toDoNoteView: UITextView!
     
     var toDoItem: String?
+    var toDoNote: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         toDoField.text = toDoItem
+        toDoNoteView.text = toDoNote
         toDoField.delegate = self
         toDoField.becomeFirstResponder()
         
@@ -26,6 +29,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate {
             saveBarButton.isEnabled = false
         } else {
             saveBarButton.isEnabled = true
+            navigationItem.title = "To Do Item"
         }
     
     }
@@ -69,6 +73,7 @@ class DetailViewController: UIViewController, UITextFieldDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if saveBarButton == sender as! UIBarButtonItem {
             toDoItem = toDoField.text
+            toDoNote = toDoNoteView.text
         }
     }
 
